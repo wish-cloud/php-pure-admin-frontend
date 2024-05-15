@@ -1,12 +1,7 @@
 import "./index.css";
 import type { OptionsType } from "./type";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import {
-  useDark,
-  isNumber,
-  isFunction,
-  useResizeObserver
-} from "@pureadmin/utils";
+import { useDark, isFunction, useResizeObserver } from "@pureadmin/utils";
 import {
   type PropType,
   h,
@@ -34,9 +29,19 @@ const props = {
     type: Boolean,
     default: false
   },
-  /** 控件尺寸	 */
+  /** 控件尺寸 */
   size: {
     type: String as PropType<"small" | "default" | "large">
+  },
+  /** 是否全局禁用，默认 `false` */
+  disabled: {
+    type: Boolean,
+    default: false
+  },
+  /** 当内容发生变化时，设置 `resize` 可使其自适应容器位置 */
+  resize: {
+    type: Boolean,
+    default: false
   }
 };
 
@@ -52,21 +57,27 @@ export default defineComponent({
     const curMouseActive = ref(-1);
     const segmentedItembg = ref("");
     const instance = getCurrentInstance()!;
-    const curIndex = isNumber(props.modelValue)
-      ? toRef(props, "modelValue")
-      : ref(0);
+
+    const curIndex = ref(0);
+    const modelValue = toRef(props, "modelValue");
+    curIndex.value = 0;
+    props.options.forEach((option, index) => {
+      if (option.value === modelValue.value) {
+        curIndex.value = index;
+      }
+    });
 
     function handleChange({ option, index }, event: Event) {
-      if (option.disabled) return;
+      if (props.disabled || option.disabled) return;
       event.preventDefault();
-      isNumber(props.modelValue)
-        ? emit("update:modelValue", index)
-        : (curIndex.value = index);
+      curIndex.value = index;
       segmentedItembg.value = "";
       emit("change", { index, option });
+      emit("update:modelValue", option.value);
     }
 
     function handleMouseenter({ option, index }, event: Event) {
+      if (props.disabled) return;
       event.preventDefault();
       curMouseActive.value = index;
       if (option.disabled || curIndex.value === index) {
@@ -79,6 +90,7 @@ export default defineComponent({
     }
 
     function handleMouseleave(_, event: Event) {
+      if (props.disabled) return;
       event.preventDefault();
       curMouseActive.value = -1;
     }
@@ -101,7 +113,7 @@ export default defineComponent({
       });
     }
 
-    props.block && handleResizeInit();
+    (props.block || props.resize) && handleResizeInit();
 
     watch(
       () => curIndex.value,
@@ -115,7 +127,9 @@ export default defineComponent({
       }
     );
 
-    watch(() => props.size, handleResizeInit);
+    watch(() => props.size, handleResizeInit, {
+      immediate: true
+    });
 
     const rendLabel = () => {
       return props.options.map((option, index) => {
@@ -124,14 +138,16 @@ export default defineComponent({
             ref={`labelRef${index}`}
             class={[
               "pure-segmented-item",
-              option?.disabled && "pure-segmented-item-disabled"
+              (props.disabled || option?.disabled) &&
+                "pure-segmented-item-disabled"
             ]}
             style={{
               background:
                 curMouseActive.value === index ? segmentedItembg.value : "",
-              color:
-                !option.disabled &&
-                (curIndex.value === index || curMouseActive.value === index)
+              color: props.disabled
+                ? null
+                : !option.disabled &&
+                    (curIndex.value === index || curMouseActive.value === index)
                   ? isDark.value
                     ? "rgba(255, 255, 255, 0.85)"
                     : "rgba(0,0,0,.88)"

@@ -4,7 +4,10 @@ PHP Pure Admin 是一个基于 Laravel 和 Vue 的后台管理系统框架。这
 
 ## 特性
 
-- **现代技术栈**: 使用最新版本的 Laravel 和 Vue.js，保证了项目的现代性和高效性。
+- **现代技术栈**: 完全采用
+        ECMAScript 模块（ESM）规范来编写和组织代码，使用了最新的
+        Vue3、Vite、Element-Plus、TypeScript、Pinia、Tailwindcss
+        等主流技术开发，保证了项目的现代性和高效性。
 - **灵活性**: 可以轻松地根据你的业务需求进行定制和扩展。
 - **响应式设计**: 确保在各种设备上都有良好的用户体验。
 

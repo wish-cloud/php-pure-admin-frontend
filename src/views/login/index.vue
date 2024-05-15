@@ -10,13 +10,14 @@ import { useUserStoreHook } from "@/store/modules/user";
 import { initRouter, getTopMenu } from "@/router/utils";
 import { bg, avatar, illustration } from "./utils/static";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import { ref, reactive, toRaw, onMounted, onBeforeUnmount } from "vue";
+import { ref, reactive, toRaw, watch, onMounted, onBeforeUnmount } from "vue";
 import { useDataThemeChange } from "@/layout/hooks/useDataThemeChange";
 
 import dayIcon from "@/assets/svg/day.svg?component";
 import darkIcon from "@/assets/svg/dark.svg?component";
 import Lock from "@iconify-icons/ri/lock-fill";
 import User from "@iconify-icons/ri/user-3-fill";
+import Info from "@iconify-icons/ri/information-line";
 
 defineOptions({
   name: "Login"
@@ -28,34 +29,35 @@ const ruleFormRef = ref<FormInstance>();
 const { initStorage } = useLayout();
 initStorage();
 
-const { dataTheme, dataThemeChange } = useDataThemeChange();
-dataThemeChange();
+const { dataTheme, overallStyle, dataThemeChange } = useDataThemeChange();
+dataThemeChange(overallStyle.value);
 const { title } = useNav();
 
 const ruleForm = reactive({
   account: "",
   password: ""
 });
+const checked = ref(false);
 
 const onLogin = async (formEl: FormInstance | undefined) => {
-  loading.value = true;
   if (!formEl) return;
   await formEl.validate((valid, fields) => {
     if (valid) {
+      loading.value = true;
       useUserStoreHook()
-        .loginByAccount({ account: ruleForm.account, password: ruleForm.password })
+        .loginByAccount({
+          account: ruleForm.account,
+          password: ruleForm.password
+        })
         .then(res => {
-            initRouter().then(() => {
-              router.push(getTopMenu(true).path);
+          // 获取后端路由
+          return initRouter().then(() => {
+            router.push(getTopMenu(true).path).then(() => {
               message("登录成功", { type: "success" });
             });
-        }).catch(err => {
-          message(err.response.data.message, { type: "error" });
-          loading.value = false;
-        });
-    } else {
-      loading.value = false;
-      return fields;
+          });
+        })
+        .finally(() => (loading.value = false));
     }
   });
 };
@@ -73,6 +75,10 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   window.document.removeEventListener("keypress", onkeypress);
+});
+
+watch(checked, bool => {
+  useUserStoreHook().SET_ISREMEMBERED(bool);
 });
 </script>
 
@@ -139,15 +145,35 @@ onBeforeUnmount(() => {
             </Motion>
 
             <Motion :delay="250">
-              <el-button
-                class="w-full mt-4"
-                size="default"
-                type="primary"
-                :loading="loading"
-                @click="onLogin(ruleFormRef)"
-              >
-                登录
-              </el-button>
+              <el-form-item>
+                <div
+                  class="w-full h-[20px] flex justify-between items-center pl-1"
+                >
+                  <el-checkbox v-model="checked">
+                    <span class="flex">
+                      记住我
+                      <IconifyIconOffline
+                        v-tippy="{
+                          content: '勾选并登录后，3天数内可自动登入系统',
+                          placement: 'top'
+                        }"
+                        :icon="Info"
+                        class="ml-1"
+                      />
+                    </span>
+                  </el-checkbox>
+                </div>
+
+                <el-button
+                  class="w-full mt-4"
+                  size="default"
+                  type="primary"
+                  :loading="loading"
+                  @click="onLogin(ruleFormRef)"
+                >
+                  登录
+                </el-button>
+              </el-form-item>
             </Motion>
           </el-form>
         </div>

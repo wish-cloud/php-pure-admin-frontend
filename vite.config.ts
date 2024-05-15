@@ -4,14 +4,14 @@ import { type UserConfigExport, type ConfigEnv, loadEnv } from "vite";
 import {
   root,
   alias,
-  warpperEnv,
+  wrapperEnv,
   pathResolve,
   __APP_INFO__
 } from "./build/utils";
 
 export default ({ mode }: ConfigEnv): UserConfigExport => {
   const { VITE_CDN, VITE_PORT, VITE_COMPRESSION, VITE_PUBLIC_PATH } =
-    warpperEnv(loadEnv(mode, root));
+    wrapperEnv(loadEnv(mode, root));
   return {
     base: VITE_PUBLIC_PATH,
     root,
@@ -28,7 +28,7 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
         "/api": {
           target: "http://localhost:8000",
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, "/api/")
+          rewrite: path => path.replace(/^\/api/, "/api/")
         }
       },
       // 预热文件以提前转换和缓存结果，降低启动期间的初始页面加载时长并防止转换瀑布

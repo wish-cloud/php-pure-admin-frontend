@@ -19,7 +19,7 @@ declare global {
     /** 菜单名称右侧的额外图标 */
     extraIcon?: string | FunctionalComponent | IconifyIcon;
     /** 是否在菜单中显示（默认`true`）`可选` */
-    showLink?: boolean;
+    isShow?: boolean;
     /** 是否显示父级菜单 `可选` */
     showParent?: boolean;
     /** 页面级别权限设置 `可选` */
@@ -45,12 +45,14 @@ declare global {
       /** 离场动画 */
       leaveTransition?: string;
     };
-    // 是否不添加信息到标签页，（默认`false`）
+    /** 当前菜单名称或自定义信息禁止添加到标签页（默认`false`） */
     hiddenTag?: boolean;
+    /** 当前菜单名称是否固定显示在标签页且不可关闭（默认`false`） */
+    fixedTag?: boolean;
     /** 动态路由可打开的最大数量 `可选` */
     dynamicLevel?: number;
     /** 将某个菜单激活
-     * （主要用于通过`query`或`params`传参的路由，当它们通过配置`showLink: false`后不在菜单中显示，就不会有任何菜单高亮，
+     * （主要用于通过`query`或`params`传参的路由，当它们通过配置`isShow: false`后不在菜单中显示，就不会有任何菜单高亮，
      * 而通过设置`activePath`指定激活菜单即可获得高亮，`activePath`为指定激活菜单的`path`）
      */
     activePath?: string;
@@ -91,7 +93,7 @@ declare global {
       /** 菜单图标 `可选` */
       icon?: string | FunctionalComponent | IconifyIcon;
       /** 是否在菜单中显示（默认`true`）`可选` */
-      showLink?: boolean;
+      isShow?: boolean;
       /** 菜单升序排序，值越高排的越后（只针对顶级路由）`可选` */
       rank?: number;
     };

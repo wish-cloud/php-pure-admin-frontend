@@ -113,7 +113,7 @@ export function useTags() {
   ]);
 
   function conditionHandle(item, previous, next) {
-    if (isBoolean(route?.meta?.showLink) && route?.meta?.showLink === false) {
+    if (isBoolean(route?.meta?.isShow) && route?.meta?.isShow === false) {
       if (Object.keys(route.query).length > 0) {
         return isEqual(route.query, item.query) ? previous : next;
       } else {

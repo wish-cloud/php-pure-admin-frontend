@@ -1,12 +1,19 @@
 import { defineStore } from "pinia";
-import { store } from "@/store";
-import type { userType } from "./types";
-import { routerArrays } from "@/layout/types";
-import { router, resetRouter } from "@/router";
-import { storageLocal } from "@pureadmin/utils";
-import { login } from "@/api/user";
-import type { UserResult } from "@/api/user";
-import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
+import {
+  type userType,
+  store,
+  router,
+  resetRouter,
+  routerArrays,
+  storageLocal
+} from "../utils";
+import {
+  type UserResult,
+  type RefreshTokenResult,
+  login,
+  refreshTokenApi
+} from "@/api/user";
+import { useMultiTagsStoreHook } from "./multiTags";
 import { type DataInfo, setToken, removeToken, userKey } from "@/utils/auth";
 
 export const useUserStore = defineStore({
@@ -19,7 +26,7 @@ export const useUserStore = defineStore({
     // 是否勾选了登录页的免登录
     isRemembered: false,
     // 登录页的免登录存储几天，默认7天
-    loginDay: 7
+    loginDay: 3
   }),
   actions: {
     /** 存储用户名 */
@@ -44,7 +51,7 @@ export const useUserStore = defineStore({
         login(data)
           .then(res => {
             setToken(res.data);
-            resolve(res.data);
+            resolve(res);
           })
           .catch(error => {
             reject(error);
@@ -60,6 +67,24 @@ export const useUserStore = defineStore({
       resetRouter();
       router.push("/login");
     },
+    /** 需要登陆 */
+    toLogin() {
+      removeToken();
+      router.push("/login");
+    },
+    /** 刷新`token` */
+    async handRefreshToken(data) {
+      return new Promise<RefreshTokenResult>((resolve, reject) => {
+        refreshTokenApi(data)
+          .then(res => {
+            setToken(res.data);
+            resolve(res);
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    }
   }
 });
 

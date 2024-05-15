@@ -1,9 +1,18 @@
 import { defineStore } from "pinia";
-import { store } from "@/store";
-import { routerArrays } from "@/layout/types";
-import { responsiveStorageNameSpace } from "@/config";
-import type { multiType, positionType } from "./types";
-import { isEqual, isBoolean, isUrl, storageLocal } from "@pureadmin/utils";
+import {
+  type multiType,
+  type positionType,
+  store,
+  isUrl,
+  isEqual,
+  isNumber,
+  isBoolean,
+  getConfig,
+  routerArrays,
+  storageLocal,
+  responsiveStorageNameSpace
+} from "../utils";
+import { usePermissionStoreHook } from "./permission";
 
 export const useMultiTagsStore = defineStore({
   id: "pure-multiTags",
@@ -15,7 +24,12 @@ export const useMultiTagsStore = defineStore({
       ? storageLocal().getItem<StorageConfigs>(
           `${responsiveStorageNameSpace()}tags`
         )
-      : [...routerArrays],
+      : [
+        ...routerArrays,
+        ...usePermissionStoreHook().flatteningRoutes.filter(
+          v => v?.meta?.fixedTag
+        )
+      ],
     multiTagsCache: storageLocal().getItem<StorageConfigs>(
       `${responsiveStorageNameSpace()}configure`
     )?.multiTagsCache
@@ -63,8 +77,8 @@ export const useMultiTagsStore = defineStore({
             if (isUrl(tagVal?.name)) return;
             // 如果title为空拒绝添加空信息到标签页
             if (tagVal?.meta?.title.length === 0) return;
-            // showLink:false 不添加到标签页
-            if (isBoolean(tagVal?.meta?.showLink) && !tagVal?.meta?.showLink)
+            // isShow:false 不添加到标签页
+            if (isBoolean(tagVal?.meta?.isShow) && !tagVal?.meta?.isShow)
               return;
             const tagPath = tagVal.path;
             // 判断tag是否已存在
@@ -100,6 +114,14 @@ export const useMultiTagsStore = defineStore({
             }
             this.multiTags.push(value);
             this.tagsCache(this.multiTags);
+            if (
+              getConfig()?.MaxTagsLevel &&
+              isNumber(getConfig().MaxTagsLevel)
+            ) {
+              if (this.multiTags.length > getConfig().MaxTagsLevel) {
+                this.multiTags.splice(1, 1);
+              }
+            }
           }
           break;
         case "splice":

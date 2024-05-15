@@ -5,9 +5,9 @@ export const routerArrays: Array<RouteConfigs> =
   VITE_HIDE_HOME === "false"
     ? [
         {
-          path: "/welcome",
+        path: "/home",
           meta: {
-            title: "首页",
+            title: "后台首页",
             icon: "ep:home-filled"
           }
         }
@@ -17,7 +17,7 @@ export const routerArrays: Array<RouteConfigs> =
 export type routeMetaType = {
   title?: string;
   icon?: string | IconifyIcon;
-  showLink?: boolean;
+  isShow?: boolean;
   savedPosition?: boolean;
   auths?: Array<string>;
 };

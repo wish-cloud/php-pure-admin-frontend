@@ -8,17 +8,28 @@ export default defineFakeRoute([
     response: ({ body }) => {
       if (body.account === "admin") {
         return {
-          account: "admin",
-          // 一个用户可能有多个角色
-          roles: ["admin"],
-          accessToken: "eyJhbGciOiJIUzUxMiJ9.admin",
+          success: true,
+          data: {
+            account: "admin",
+            name: "小铭",
+            // 一个用户可能有多个角色
+            roles: ["admin"],
+            accessToken: "eyJhbGciOiJIUzUxMiJ9.admin",
+            refreshToken: "eyJhbGciOiJIUzUxMiJ9.adminRefresh",
+            expires: "2030/10/30 00:00:00"
+          }
         };
       } else {
         return {
-          account: "common",
-          // 一个用户可能有多个角色
-          roles: ["common"],
-          accessToken: "eyJhbGciOiJIUzUxMiJ9.common",
+          success: true,
+          data: {
+            account: "common",
+            name: "小林",
+            roles: ["common"],
+            accessToken: "eyJhbGciOiJIUzUxMiJ9.common",
+            refreshToken: "eyJhbGciOiJIUzUxMiJ9.commonRefresh",
+            expires: "2030/10/30 00:00:00"
+          }
         };
       }
     }

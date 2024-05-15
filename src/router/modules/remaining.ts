@@ -7,7 +7,7 @@ export default [
     component: () => import("@/views/login/index.vue"),
     meta: {
       title: "登录",
-      showLink: false,
+      isShow: false,
       rank: 101
     }
   },
@@ -16,7 +16,7 @@ export default [
     component: Layout,
     meta: {
       title: "加载中...",
-      showLink: false,
+      isShow: false,
       rank: 102
     },
     children: [

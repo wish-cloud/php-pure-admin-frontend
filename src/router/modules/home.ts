@@ -5,20 +5,20 @@ export default {
   path: "/",
   name: "Home",
   component: Layout,
-  redirect: "/welcome",
+  redirect: "/home",
   meta: {
     icon: "ep:home-filled",
-    title: "首页",
+    title: "后台首页",
     rank: 0
   },
   children: [
     {
-      path: "/welcome",
-      name: "Welcome",
-      component: () => import("@/views/welcome/index.vue"),
+      path: "/home",
+      name: "Home",
+      component: () => import("@/views/home/index.vue"),
       meta: {
-        title: "首页",
-        showLink: VITE_HIDE_HOME === "true" ? false : true
+        title: "后台首页",
+        isShow: VITE_HIDE_HOME === "true" ? false : true
       }
     }
   ]
