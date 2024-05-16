@@ -154,7 +154,7 @@ watch(checked, bool => {
                       记住我
                       <IconifyIconOffline
                         v-tippy="{
-                          content: '勾选并登录后，3天数内可自动登入系统',
+                          content: '不勾选时，关闭浏览器后会自动退出登录',
                           placement: 'top'
                         }"
                         :icon="Info"

@@ -14,6 +14,8 @@ export type UserResult = {
     refreshToken: string;
     /** `accessToken`的过期时间（时间戳） */
     tokenExpires: number;
+    /** `refreshToken`的过期时间（时间戳） */
+    refreshTokenExpires: number;
   };
 };
 
@@ -27,6 +29,8 @@ export type RefreshTokenResult = {
     refreshToken: string;
     /** `accessToken`的过期时间（时间戳） */
     tokenExpires: number;
+    /** `refreshToken`的过期时间（时间戳） */
+    refreshTokenExpires: number;
   };
 };
 
@@ -37,5 +41,7 @@ export const login = (data?: object) => {
 
 /** 刷新`token` */
 export const refreshTokenApi = (data?: object) => {
-  return http.request<RefreshTokenResult>("post", "/refresh-token", { data });
+  return http.request<RefreshTokenResult>("post", baseUrlApi("refresh-token"), {
+    data
+  });
 };

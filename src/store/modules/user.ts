@@ -25,7 +25,7 @@ export const useUserStore = defineStore({
     roles: storageLocal().getItem<DataInfo<number>>(userKey)?.roles ?? [],
     // 是否勾选了登录页的免登录
     isRemembered: false,
-    // 登录页的免登录存储几天，默认7天
+    // 登录页的免登录存储几天，默认3天
     loginDay: 3
   }),
   actions: {
