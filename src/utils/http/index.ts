@@ -42,6 +42,9 @@ class PureHttp {
   /** 防止重复刷新`token` */
   private static isRefreshing = false;
 
+  /** 需要登录时提示 */
+  private static needLogin = false;
+
   /** 初始化配置对象 */
   private static initConfig: PureHttpRequestConfig = {};
 
@@ -79,7 +82,7 @@ class PureHttp {
           ? config
           : new Promise(resolve => {
             const data = getToken();
-            if (data) {
+            if (data && data.accessToken) {
                 const now = new Date().getTime();
                 const expired = parseInt(data.tokenExpires) - now <= 0;
                 if (expired) {
@@ -169,9 +172,11 @@ class PureHttp {
         })
         .catch(error => {
           if (error.response.data.code === 401) {
-            // 重新登录
-            message("登录已过期，请重新登录", { type: "error" });
-            useUserStoreHook().toLogin();
+            if (!PureHttp.needLogin) {
+              PureHttp.needLogin = true;
+              message("登录已过期，请重新登录", { type: "error" });
+              useUserStoreHook().toLogin();
+            }
           } else {
             message(error.response.data.message || "网络异常，请稍后再试", {
               type: "error"
