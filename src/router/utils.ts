@@ -17,11 +17,13 @@ import {
   isIncludeAllChildren
 } from "@pureadmin/utils";
 import { getConfig } from "@/config";
+import { message } from "@/utils/message";
 import { buildHierarchyTree } from "@/utils/tree";
 import { userKey, type DataInfo } from "@/utils/auth";
 import { type menuType, routerArrays } from "@/layout/types";
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
 import { usePermissionStoreHook } from "@/store/modules/permission";
+import { useUserStoreHook } from "@/store/modules/user";
 const IFrame = () => import("@/layout/frame.vue");
 // https://cn.vitejs.dev/guide/features.html#glob-import
 const modulesRoutes = import.meta.glob("/src/views/**/*.{vue,tsx}");
@@ -152,6 +154,12 @@ function addPathMatch() {
 /** 处理动态路由（后端返回的路由） */
 function handleAsyncRoutes(routeList) {
   if (routeList.length === 0) {
+    if (routerArrays.length === 0) {
+      message("该账号未分配任何权限，请更换", { type: "error" });
+      useUserStoreHook().toLogin();
+      return;
+    }
+    // 后端没有返回路由时，直接使用静态路由
     usePermissionStoreHook().handleWholeMenus(routeList);
   } else {
     formatFlatteningRoutes(addAsyncRoutes(routeList)).map(

@@ -52,7 +52,9 @@ const onLogin = async (formEl: FormInstance | undefined) => {
         .then(res => {
           // 获取后端路由
           return initRouter().then(() => {
-            router.push(getTopMenu(true).path).then(() => {
+            const topMenu = getTopMenu(true);
+            if (!topMenu) return;
+            router.push(topMenu.path).then(() => {
               message("登录成功", { type: "success" });
             });
           });
