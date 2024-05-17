@@ -41,6 +41,7 @@ const { title, getLogo } = useNav();
   position: relative;
   width: 100%;
   height: 48px;
+  margin-bottom: 15px;
   overflow: hidden;
 
   .sidebar-logo-link {
