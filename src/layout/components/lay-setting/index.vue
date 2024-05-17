@@ -436,17 +436,20 @@ onUnmounted(() => removeMatchMedia);
         </button>
       </span>
 
-      <p :class="['mt-4', pClass]">页签风格</p>
-      <Segmented
-        resize
-        class="select-none"
-        :modelValue="markValue === 'smart' ? 0 : 1"
-        :options="markOptions"
-        @change="onChange"
-      />
-
       <p class="mt-5 font-medium text-sm dark:text-white">界面显示</p>
       <ul class="setting">
+        <li>
+          <span class="dark:text-white">显示Logo</span>
+          <el-switch
+            v-model="logoVal"
+            inline-prompt
+            :active-value="true"
+            :inactive-value="false"
+            active-text="开"
+            inactive-text="关"
+            @change="logoChange"
+          />
+        </li>
         <li>
           <span class="dark:text-white">灰色模式</span>
           <el-switch
@@ -468,19 +471,11 @@ onUnmounted(() => removeMatchMedia);
           />
         </li>
         <li>
-          <span class="dark:text-white">隐藏标签页</span>
-          <el-switch
-            v-model="settings.tabsVal"
-            inline-prompt
-            active-text="开"
-            inactive-text="关"
-            @change="tagsChange"
-          />
-        </li>
-        <li>
-          <span class="dark:text-white">隐藏页脚</span>
+          <span class="dark:text-white">显示页脚</span>
           <el-switch
             v-model="settings.hideFooter"
+            :active-value="false"
+            :inactive-value="true"
             inline-prompt
             active-text="开"
             inactive-text="关"
@@ -488,19 +483,19 @@ onUnmounted(() => removeMatchMedia);
           />
         </li>
         <li>
-          <span class="dark:text-white">Logo</span>
+          <span class="dark:text-white">显示标签页</span>
           <el-switch
-            v-model="logoVal"
+            v-model="settings.tabsVal"
+            :active-value="false"
+            :inactive-value="true"
             inline-prompt
-            :active-value="true"
-            :inactive-value="false"
             active-text="开"
             inactive-text="关"
-            @change="logoChange"
+            @change="tagsChange"
           />
         </li>
         <li>
-          <span class="dark:text-white">页签持久化</span>
+          <span class="dark:text-white">标签持久化</span>
           <el-switch
             v-model="settings.multiTagsCache"
             inline-prompt
@@ -510,6 +505,15 @@ onUnmounted(() => removeMatchMedia);
           />
         </li>
       </ul>
+
+      <p :class="['mt-4', pClass]">标签页风格</p>
+      <Segmented
+        resize
+        class="select-none"
+        :modelValue="markValue === 'smart' ? 0 : 1"
+        :options="markOptions"
+        @change="onChange"
+      />
     </div>
   </LayPanel>
 </template>
